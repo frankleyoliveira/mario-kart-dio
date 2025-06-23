@@ -27,6 +27,38 @@ function logRollResult(
   )
 }
 
+function calcRoundResult(
+  skillsSum: [number, number],
+  names: [string, string],
+  points: [number, number],
+  isConfrontation: boolean
+) {
+  const result: [number, number] = [0, 0]
+  const [s1, s2] = skillsSum
+
+  if (s1 === s2) {
+    console.log('The round ended in a draw')
+    return result
+  }
+
+  const winnerIndex = s1 > s2 ? 0 : 1
+  const loserIndex = winnerIndex ^ 1
+
+  console.log(`${names[winnerIndex]} won the round!`)
+
+  if (isConfrontation) {
+    if (points[loserIndex] > 0) {
+      result[loserIndex] = -1
+      console.log(`${names[loserIndex]} lost one point 🐢`)
+    }
+  } else {
+    console.log(`${names[winnerIndex]} scored one point!`)
+    result[winnerIndex] = 1
+  }
+
+  return result
+}
+
 ;(function main() {
   const player1 = selectPlayer('Mario')
   const player2 = selectPlayer('Luigi')
@@ -60,33 +92,15 @@ function logRollResult(
     logRollResult(player1.name, skill, diceResult1, player1[skill])
     logRollResult(player2.name, skill, diceResult2, player2[skill])
 
-    const isConfrontation = block === 'CONFRONTATION'
+    const [points1, points2] = calcRoundResult(
+      [skillSum1, skillSum2],
+      [player1.name, player2.name],
+      [player1.points, player2.points],
+      block === 'CONFRONTATION'
+    )
 
-    if (skillSum1 > skillSum2) {
-      console.log(`${player1.name} won the round!`)
-      if (isConfrontation) {
-        if (player2.points > 0) {
-          player2.points--
-          console.log(`${player2.name} lost one point 🐢`)
-        }
-      } else {
-        console.log(`${player1.name} scored one point!`)
-        player1.points++
-      }
-    } else if (skillSum2 > skillSum1) {
-      console.log(`${player2.name} won the round!`)
-      if (isConfrontation) {
-        if (player1.points > 0) {
-          player1.points--
-          console.log(`${player1.name} lost one point 🐢`)
-        }
-      } else {
-        console.log(`${player2.name} scored one point!`)
-        player2.points++
-      }
-    } else {
-      console.log('The round ended in a draw')
-    }
+    player1.points += points1
+    player2.points += points2
 
     console.log(
       `\nPartial result after round ${round}:\n${player1.name}: ${player1.points}\n${player2.name}: ${player2.points}`
