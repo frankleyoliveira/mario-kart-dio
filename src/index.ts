@@ -59,6 +59,24 @@ function calcRoundResult(
   return result
 }
 
+function declareWinner(names: [string, string], points: [number, number]) {
+  const [p1, p2] = points
+
+  console.log('\nFinal result:')
+  console.log(`${names[0]}: ${p1}`)
+  console.log(`${names[1]}: ${p2}`)
+
+  if (p1 === p2) {
+    console.log('\nThe race ended in a draw')
+
+    return
+  }
+
+  const winnerIndex = p1 > p2 ? 0 : 1
+
+  console.log(`\n${names[winnerIndex]} won the race! Congratulations! 🏆`)
+}
+
 ;(function main() {
   const player1 = selectPlayer('Mario')
   const player2 = selectPlayer('Luigi')
@@ -108,16 +126,5 @@ function calcRoundResult(
     console.log('_____________________________\n')
   }
 
-  // Declare winner
-  console.log('\nFinal result:')
-  console.log(`${player1.name}: ${player1.points}`)
-  console.log(`${player2.name}: ${player2.points}`)
-
-  if (player1.points > player2.points) {
-    console.log(`\n${player1.name} won the race! Congratulations! 🏆`)
-  } else if (player2.points > player1.points) {
-    console.log(`\n${player2.name} won the race! Congratulations! 🏆`)
-  } else {
-    console.log('\nThe race ended in a draw')
-  }
+  declareWinner([player1.name, player2.name], [player1.points, player2.points])
 })()
